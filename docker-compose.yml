@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  rethinkdb:
+    image: rethinkdb:2.4
+    ports:
+      - "8080:8080"
+      - "28015:28015"
+    volumes:
+      - rethinkdb_data:/apps/rethinkdb/data
+
+  rabbitmq_whoosh:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_whoosh
+    hostname: rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+
+volumes:
+  rethinkdb_data: null
+  rabbitmq_data: null
