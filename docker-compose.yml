@@ -3,6 +3,7 @@ version: '3.8'
 services:
 
   rethinkdb:
+    container_name: rethinkdb
     image: rethinkdb:2.4
     ports:
       - "8080:8080"
@@ -11,17 +12,18 @@ services:
       - rethinkdb_data:/apps/rethinkdb/data
 
   rabbitmq_whoosh:
-    image: rabbitmq:3-management
     container_name: rabbitmq_whoosh
+    image: rabbitmq_whoosh
     hostname: rabbitmq
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    build:
+      dockerfile: Dockerfile
+      target: rabbitmq
     ports:
       - 5672:5672
       - 15672:15672
-    environment:
-      RABBITMQ_DEFAULT_USER: rabbitmq
-      RABBITMQ_DEFAULT_PASS: rabbitmq
+      - 15674:15674
 
 volumes:
   rethinkdb_data: null
