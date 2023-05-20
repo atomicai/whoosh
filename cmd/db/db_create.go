@@ -1,11 +1,11 @@
-package config
+package main
 
 import (
 	"fmt"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 )
 
-func config() {
+func main() {
 	session, err := r.Connect(r.ConnectOpts{
 		Address:  "localhost:28015",
 		Database: "whoosh",
