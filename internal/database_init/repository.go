@@ -4,17 +4,20 @@ import (
 	"fmt"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"log"
+	"sync"
 )
 
 type IDBRepository interface {
 	DeleteTables()
 	CreateTable(tableName string)
 	AddRows(values *[]interface{}, tableName string)
+	AddRowsByChan(ch chan interface{}, tableName string)
 }
 
 type DBRepository struct {
 	dbName  string
 	session *r.Session
+	sync.Mutex
 }
 
 func NewDBRepository(dbname string) *DBRepository {
@@ -58,4 +61,15 @@ func (d *DBRepository) AddRows(values *[]interface{}, tableName string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func (d *DBRepository) AddRowsByChan(ch chan interface{}, tableName string) {
+	d.Lock()
+	for value := range ch {
+		err := r.Table(tableName).Insert(value).Exec(d.session)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	d.Unlock()
 }

@@ -13,6 +13,7 @@ import (
 type IDBService interface {
 	DeleteTables()
 	CreateTable(tableName, fileName string, parser func(line []string) (interface{}, error))
+	CreateTableByChan(tableName, fileName string, parser func(line []string) (interface{}, error))
 }
 
 type DBService struct {
@@ -70,7 +71,7 @@ func ParseScooters(line []string) (interface{}, error) {
 func (s *DBService) CreateTable(tableName, fileName string, parser func(line []string) (interface{}, error)) {
 	s.repository.CreateTable(tableName)
 
-	dirLink := fmt.Sprintf("C:\\Users\\insha\\OneDrive\\Документы\\whoosh\\Datasets\\%s", fileName)
+	dirLink := fmt.Sprintf("C:\\Users\\insha\\OneDrive\\Документы\\whoosh\\Datasets\\%s", fileName) // path in computer
 	csvFile, err := os.Open(dirLink)
 	if err != nil {
 		log.Fatal(err)
@@ -80,7 +81,8 @@ func (s *DBService) CreateTable(tableName, fileName string, parser func(line []s
 	reader := csv.NewReader(csvFile)
 
 	i := 0
-	values := make([]interface{}, 0, 1000)
+	arrSize := 10_000
+	values := make([]interface{}, 0, arrSize)
 	for ; ; i++ {
 		line, err := reader.Read()
 		if err == io.EOF {
@@ -99,10 +101,49 @@ func (s *DBService) CreateTable(tableName, fileName string, parser func(line []s
 		}
 
 		values = append(values, value)
-		if i%1000 == 0 {
+		if i%arrSize == 0 {
 			s.repository.AddRows(&values, tableName)
-			values = make([]interface{}, 0, 1000)
+			values = make([]interface{}, 0, arrSize)
 		}
 	}
 	s.repository.AddRows(&values, tableName)
+}
+
+func (s *DBService) CreateTableByChan(tableName, fileName string, parser func(line []string) (interface{}, error)) {
+	s.repository.CreateTable(tableName)
+
+	dirLink := fmt.Sprintf("C:\\Users\\insha\\OneDrive\\Документы\\whoosh\\Datasets\\%s", fileName) // path in computer
+	csvFile, err := os.Open(dirLink)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer csvFile.Close()
+
+	reader := csv.NewReader(csvFile)
+
+	//chSize := 10
+	i := 0
+	ch := make(chan interface{})
+
+	go s.repository.AddRowsByChan(ch, tableName)
+
+	for ; ; i++ {
+		line, err := reader.Read()
+		if err == io.EOF {
+			break
+		}
+		if i == 0 {
+			continue // skip [ts_utc parking_id scooters_at_parkings]
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		value, err := parser(line)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		ch <- value
+	}
 }

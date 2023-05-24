@@ -15,6 +15,10 @@ func (h *DBHanlder) DeleteTables() {
 }
 
 func (h *DBHanlder) CreateTables() {
-	h.dbService.CreateTable("scooters_at_parkings", "scooters_at_parkings (1).csv", ParseScooters)
 	h.dbService.CreateTable("clashes", "clashes (1).csv", ParseClashes)
+	//h.dbService.CreateTable("road_index", "road_index (1).csv", ParseRoads)
+	//h.dbService.CreateTable("routers_hex20m", "routes_hex20m.csv", ParseRoutes)
+	//h.dbService.CreateTable("scooters_at_parkings", "scooters_at_parkings (1).csv", ParseScooters)
+	//h.dbService.CreateTable("speed_median_hex20m_hackaton", "speed_median", ParseSpeedMedian)
+
 }
