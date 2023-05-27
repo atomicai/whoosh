@@ -67,7 +67,6 @@ func OptimalPath() {
 
 			json.Unmarshal(d.Body, &bodyToJson)
 
-			log.Printf("Received a message: %s", d.Body)
 			err = ch.PublishWithContext(ctx,
 				"",        // exchange
 				qRes.Name, // routing key
