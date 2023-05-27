@@ -1,4 +1,4 @@
-package model
+package models
 
 type Path struct {
 	ID string `json:"id" gorethink:"id,omitempty"`
