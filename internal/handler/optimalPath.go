@@ -75,7 +75,7 @@ func OptimalPath() {
 				false,     // immediate
 				amqp.Publishing{
 					ContentType: "text/plain",
-					Body:        []byte(result),
+					Body:        []byte(d.Body),
 				})
 
 		}
