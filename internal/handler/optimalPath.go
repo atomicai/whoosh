@@ -2,20 +2,28 @@ package handler
 
 import (
 	"context"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"log"
 	"time"
+
+	amqp "github.com/rabbitmq/amqp091-go"
 )
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Panicf("%s: %s", msg, err)
+	}
+}
 
 func OptimalPath() {
 	conn, err := amqp.Dial("amqp://rabbitmq:rabbitmq@localhost:5672/")
-	FailOnError(err, "Failed to connect to RabbitMQ")
+	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	FailOnError(err, "Failed to open a channel")
+	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
-	q, err := ch.QueueDeclare(
+
+	qReq, err := ch.QueueDeclare(
 		"DijkstraPathQuery", // name
 		false,               // durable
 		false,               // delete when unused
@@ -23,49 +31,50 @@ func OptimalPath() {
 		false,               // no-wait
 		nil,                 // arguments
 	)
-	FailOnError(err, "Failed to declare a queue")
+	qRes, err := ch.QueueDeclare(
+		"DijkstraPathResponse", // name
+		false,                  // durable
+		false,                  // delete when unused
+		false,                  // exclusive
+		false,                  // no-wait
+		nil,                    // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
 
 	msgs, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		true,   // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
+		qReq.Name, // queue
+		"",        // consumer
+		true,      // auto-ack
+		false,     // exclusive
+		false,     // no-local
+		false,     // no-wait
+		nil,       // args
 	)
-	FailOnError(err, "Failed to register a consumer")
+	failOnError(err, "Failed to register a consumer")
 
 	var forever chan struct{}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
 	go func() {
+		for d := range msgs {
+			log.Printf("Received a message: %s", d.Body)
 
-		log.Printf("Received a message: %s", msgs)
+			body := d.Body
 
-		q, err = ch.QueueDeclare(
-			"DijkstraPathArgs", // name
-			false,              // durable
-			false,              // delete when unused
-			false,              // exclusive
-			false,              // no-wait
-			nil,                // arguments
-		)
-		FailOnError(err, "Failed to declare a queue")
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-		defer cancel()
+			log.Printf("Received a message: %s", d.Body)
+			err = ch.PublishWithContext(ctx,
+				"",        // exchange
+				qRes.Name, // routing key
+				false,     // mandatory
+				false,     // immediate
+				amqp.Publishing{
+					ContentType: "text/plain",
+					Body:        []byte(body),
+				})
 
-		body := "Hello World!"
-		err = ch.PublishWithContext(ctx,
-			"",     // exchange
-			q.Name, // routing key
-			false,  // mandatory
-			false,  // immediate
-			amqp.Publishing{
-				ContentType: "text/plain",
-				Body:        []byte(body),
-			})
-		FailOnError(err, "Failed to publish a message")
-		log.Printf(" [x] Sent %s\n", body)
+		}
 	}()
 
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
