@@ -15,3 +15,9 @@ type Point struct {
 	Lat float64 `json:"lat"`
 	Lon float64 `json:"lon"`
 }
+
+type PathQuery struct {
+	StartPoint []Point `json:"startPoint"`
+	EndPoint   []Point `json:"endPoint"`
+	UserId     string  `json:"userId"`
+}

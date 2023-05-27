@@ -2,6 +2,8 @@ package handler
 
 import (
 	"context"
+	"encoding/json"
+	"github.com/atomicai/whoosh/internal/models"
 	"log"
 	"time"
 
@@ -61,7 +63,9 @@ func OptimalPath() {
 		for d := range msgs {
 			log.Printf("Received a message: %s", d.Body)
 
-			body := d.Body
+			bodyToJson := models.PathQuery{}
+
+			json.Unmarshal(d.Body, &bodyToJson)
 
 			log.Printf("Received a message: %s", d.Body)
 			err = ch.PublishWithContext(ctx,
@@ -71,7 +75,7 @@ func OptimalPath() {
 				false,     // immediate
 				amqp.Publishing{
 					ContentType: "text/plain",
-					Body:        []byte(body),
+					Body:        []byte(result),
 				})
 
 		}
