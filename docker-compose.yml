@@ -25,10 +25,10 @@ services:
       - 15672:15672
       - 15674:15674
 
-  whoosh:
-   extends:
-     file: ../whoosh/docker-compose.yml
-     service: whoosh_external
+#  whoosh:
+#   extends:
+#     file: ../whoosh/docker-compose.yml
+#     service: whoosh_external
 
 volumes:
   rethinkdb_data: null

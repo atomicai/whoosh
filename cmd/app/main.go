@@ -1,24 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"github.com/atomicai/whoosh/internal/handler"
-	"github.com/atomicai/whoosh/internal/models"
 )
 
 func main() {
-	pathQuery := models.PathQuery{
-		StartPoint: models.Point{
-			Lat: -13.5,
-			Lon: 0,
-		},
-		EndPoint: models.Point{
-			Lat: 13.5,
-			Lon: 0,
-		},
-		UserId: "4",
-	}
+	dbname := "whoosh"
+	handler.NewDijkstra(dbname)
+	handler.OptimalPath()
 
-	path := handler.InitDijkstra(&pathQuery)
-	fmt.Printf("path: %+v", path)
+	//pathQuery := models.PathQuery{
+	//	StartPoint: models.Point{
+	//		Lat: 0,
+	//		Lon: 7.5,
+	//	},
+	//	EndPoint: models.Point{
+	//		Lat: -4.5,
+	//		Lon: -5,
+	//	},
+	//	UserId: "1",
+	//}
+	//res := handler.Dijkstra(&pathQuery)
+	//fmt.Printf("result: %+v", res)
 }
