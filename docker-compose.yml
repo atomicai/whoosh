@@ -18,6 +18,7 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     build:
+      context: ./
       dockerfile: Dockerfile
       target: rabbitmq
     ports:
@@ -29,6 +30,16 @@ services:
    extends:
      file: ../whooshui/docker-compose.yml
      service: whooshui_external
+
+  apigo:
+    container_name: apigo
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: goAPP
+    depends_on:
+      - rabbitmq_whoosh
+      - rethinkdb
 
 volumes:
   rethinkdb_data: null
