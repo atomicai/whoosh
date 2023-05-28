@@ -72,7 +72,7 @@ func ParseScooters(line []string) (interface{}, error) {
 func (s *DBService) CreateTable(tableName, fileName string, parser func(line []string) (interface{}, error)) {
 	s.repository.CreateTable(tableName)
 
-	dirLink := fmt.Sprintf("C:\\Users\\insha\\OneDrive\\Документы\\whoosh\\TestDatasets\\%s", fileName) // path in computer
+	dirLink := fmt.Sprintf("%s", fileName) // path in computer
 	csvFile, err := os.Open(dirLink)
 	if err != nil {
 		log.Fatal(err)
