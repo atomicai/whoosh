@@ -6,15 +6,12 @@ FROM golang:1.20.4-alpine AS goAPP
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+COPY go.* ./
 
 RUN go mod download
 
 COPY . .
 
-RUN go build -o ./app ./
+RUN go build -o /app .
 
-RUN go build -o /main
-
-CMD [ "/main" ]
+ENTRYPOINT [ "/app" ]

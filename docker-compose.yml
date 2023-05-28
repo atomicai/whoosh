@@ -23,13 +23,13 @@ services:
       target: rabbitmq
     ports:
       - 5672:5672
-      - 15672:15672
+      - 15679:15672
       - 15674:15674
 
-  whooshui:
-   extends:
-     file: ../whooshui/docker-compose.yml
-     service: whooshui_external
+#  whooshui:
+#   extends:
+#     file: ../whooshui/docker-compose.yml
+#     service: whooshui_external
 
   apigo:
     container_name: apigo

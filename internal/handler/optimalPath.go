@@ -17,7 +17,7 @@ func failOnError(err error, msg string) {
 }
 
 func OptimalPath() {
-	conn, err := amqp.Dial("amqp://rabbitmq:rabbitmq@localhost:5672/")
+	conn, err := amqp.Dial("amqp://quest:quest@amqp/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
