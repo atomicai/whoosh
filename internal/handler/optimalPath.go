@@ -27,7 +27,7 @@ func OptimalPath() {
 
 	qReq, err := ch.QueueDeclare(
 		"DijkstraPathQuery", // name
-		false,               // durable
+		true,                // durable
 		false,               // delete when unused
 		false,               // exclusive
 		false,               // no-wait
@@ -35,7 +35,7 @@ func OptimalPath() {
 	)
 	qRes, err := ch.QueueDeclare(
 		"DijkstraPathResponse", // name
-		false,                  // durable
+		true,                   // durable
 		false,                  // delete when unused
 		false,                  // exclusive
 		false,                  // no-wait

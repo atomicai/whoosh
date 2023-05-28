@@ -25,6 +25,11 @@ services:
       - 15672:15672
       - 15674:15674
 
+  whooshui_external:
+    extends:
+      file: ../whooshui/docker-compose.yml
+      service: whooshui_external
+
 volumes:
   rethinkdb_data: null
   rabbitmq_data: null
