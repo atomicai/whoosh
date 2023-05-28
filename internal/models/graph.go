@@ -22,8 +22,8 @@ type Node struct {
 
 type NodeWithValue struct {
 	Id        int
-	Lat       float64
 	Lon       float64
+	Lat       float64
 	Neighbors []*Edge
 	Value     float64
 	HValue    float64

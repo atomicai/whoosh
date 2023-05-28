@@ -118,16 +118,16 @@ func ParseGraph(line []string) (interface{}, error) {
 		return nil, err
 	}
 	graph.NodeId = id
-	lat, err := strconv.ParseFloat(line[1], 64)
-	if err != nil {
-		return nil, err
-	}
-	graph.Lat = lat
-	lon, err := strconv.ParseFloat(line[2], 64)
+	lon, err := strconv.ParseFloat(line[1], 64)
 	if err != nil {
 		return nil, err
 	}
 	graph.Lon = lon
+	lat, err := strconv.ParseFloat(line[2], 64)
+	if err != nil {
+		return nil, err
+	}
+	graph.Lat = lat
 	for i := 0; i < 6; i++ {
 		idTo, err := strconv.ParseFloat(line[3+i*2], 32)
 		if err != nil {
@@ -137,7 +137,7 @@ func ParseGraph(line []string) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		if idTo != -1 && weight != 1 {
+		if idTo != -1.0 && weight != 1.0 {
 			graph.Neighbors = append(graph.Neighbors, &models.Edge{To: int(idTo), Weight: weight})
 		}
 	}

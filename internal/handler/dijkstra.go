@@ -112,6 +112,7 @@ func Dijkstra(pathQuery *models.PathQuery) *models.PathResponse {
 	dijkstra.graph.DijkstraHelper(startId)
 	start := dijkstra.graph.GetNode(startId)
 	finish := dijkstra.graph.GetNode(finishId)
+	fmt.Printf("dist in dijkstra: %f\n", finish.Value)
 
 	path := make([]models.Point, 0)
 	now := finish
@@ -173,6 +174,8 @@ func AStar(pathQuery *models.PathQuery) *models.PathResponse {
 	start := dijkstra.graph.GetNode(startId)
 	finish := dijkstra.graph.GetNode(finishId)
 
+	fmt.Printf("dist in astar: %f\n", finish.Value)
+
 	path := make([]models.Point, 0, 10)
 	now := finish
 	for now != start {
@@ -224,5 +227,6 @@ func (g *Graph) AStarHelper(startId, finishId int) {
 }
 
 func hevristic(start, end *models.NodeWithValue) float64 {
-	return (math.Abs(start.Lat-end.Lat) + math.Abs(start.Lon-end.Lon)) / 100 // check param 100!!!
+	return (math.Abs(start.Lat-end.Lat) + math.Abs(start.Lon-end.Lon)) * 1000 // check param 1000!!!
+	//return math.Sqrt((start.Lat-end.Lat)*(start.Lat-end.Lat) + (start.Lon-end.Lon)*(start.Lon-end.Lon))
 }

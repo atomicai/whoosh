@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/atomicai/whoosh/internal/models"
 	"log"
 	"time"
@@ -69,9 +68,12 @@ func OptimalPath() {
 				log.Fatal(err)
 			}
 
-			result1 := Dijkstra(&bodyToJson)
+			Dijkstra(&bodyToJson)
+			AStar(&bodyToJson)
+
+			//result1 := Dijkstra(&bodyToJson)
 			//result2 := AStar(&bodyToJson)
-			fmt.Printf("result1: %+v\n", result1)
+			//fmt.Printf("result1: %+v\n", result1)
 			//fmt.Printf("result2: %+v\n", result2)
 
 			err = ch.PublishWithContext(ctx,
@@ -86,7 +88,6 @@ func OptimalPath() {
 
 		}
 	}()
-
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
 }
