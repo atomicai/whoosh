@@ -3,7 +3,7 @@ package models
 import "sync"
 
 type HevHeap struct {
-	Elements []*Node
+	Elements []*NodeWithValue
 	sync.Mutex
 }
 
@@ -13,17 +13,17 @@ func (h *HevHeap) Size() int {
 	return len(h.Elements)
 }
 
-func (h *HevHeap) Push(Element *Node) {
+func (h *HevHeap) Push(Element *NodeWithValue) {
 	h.Lock()
 	defer h.Unlock()
 	h.Elements = append(h.Elements, Element)
 	i := len(h.Elements) - 1
-	for ; h.Elements[i].HevristicValue < h.Elements[parent(i)].HevristicValue; i = parent(i) {
+	for ; h.Elements[i].HValue < h.Elements[parent(i)].HValue; i = parent(i) {
 		h.swap(i, parent(i))
 	}
 }
 
-func (h *HevHeap) Pop() *Node {
+func (h *HevHeap) Pop() *NodeWithValue {
 	h.Lock()
 	defer h.Unlock()
 	mn := h.Elements[0]
@@ -36,10 +36,10 @@ func (h *HevHeap) Pop() *Node {
 func (h *HevHeap) rearrange(i int) {
 	smallest := i
 	left, right, size := leftChild(i), rightChild(i), len(h.Elements)
-	if left < size && h.Elements[left].HevristicValue < h.Elements[smallest].HevristicValue {
+	if left < size && h.Elements[left].HValue < h.Elements[smallest].HValue {
 		smallest = left
 	}
-	if right < size && h.Elements[right].HevristicValue < h.Elements[smallest].HevristicValue {
+	if right < size && h.Elements[right].HValue < h.Elements[smallest].HValue {
 		smallest = right
 	}
 	if smallest != i {

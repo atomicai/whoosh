@@ -3,7 +3,7 @@ package models
 import "sync"
 
 type ValueHeap struct {
-	Elements []*Node
+	Elements []*NodeWithValue
 	sync.Mutex
 }
 
@@ -13,7 +13,7 @@ func (h *ValueHeap) Size() int {
 	return len(h.Elements)
 }
 
-func (h *ValueHeap) Push(Element *Node) {
+func (h *ValueHeap) Push(Element *NodeWithValue) {
 	h.Lock()
 	defer h.Unlock()
 	h.Elements = append(h.Elements, Element)
@@ -23,7 +23,7 @@ func (h *ValueHeap) Push(Element *Node) {
 	}
 }
 
-func (h *ValueHeap) Pop() *Node {
+func (h *ValueHeap) Pop() *NodeWithValue {
 	h.Lock()
 	defer h.Unlock()
 	mn := h.Elements[0]

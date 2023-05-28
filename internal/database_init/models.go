@@ -13,3 +13,8 @@ type ScootersAtParkings struct {
 	ParkingId         int       `json:"parking_id" gorethink:"parking_id"`
 	ScootersAtParking int       `json:"scooters_at_parking" gorethink:"scooters_at_parking"`
 }
+
+type Graph struct {
+	Id  int
+	Lat int
+}

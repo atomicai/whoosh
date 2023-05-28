@@ -1,8 +1,12 @@
 package main
 
-import "github.com/atomicai/whoosh/internal/handler"
+import (
+	"fmt"
+	"github.com/atomicai/whoosh/internal/handler"
+)
 
 func main() {
-	//handler.InitDijkstra()
-	handler.OptimalPath()
+	path := handler.InitDijkstra(1, 16)
+	fmt.Printf("paths size is: %f", path)
+	//handler.OptimalPath()
 }

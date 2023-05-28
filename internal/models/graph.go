@@ -1,20 +1,39 @@
 package models
 
-type Node struct {
-	Id             int
-	X              float64
-	Y              float64
-	Value          float64
-	HevristicValue float64
-	Parent         *Node
-}
-
 type Edge struct {
-	Node   *Node
+	To     int
 	Weight float64
 }
 
-type Coordinates struct {
-	X int
-	Y int
+type InputNode struct {
+	Id        int
+	Lat       float64
+	Lon       float64
+	Neighbors []*Edge
+	id        string
+}
+
+type Node struct {
+	NodeId    int
+	Lat       float64
+	Lon       float64
+	Neighbors []*Edge
+}
+
+type NodeWithValue struct {
+	Id        int
+	Lat       float64
+	Lon       float64
+	Neighbors []*Edge
+	Value     float64
+	HValue    float64
+	Parent    *NodeWithValue
+}
+
+func NewNode() *Node {
+	return &Node{Neighbors: make([]*Edge, 0)}
+}
+
+func (n *Node) AddNeighbor(edge *Edge) {
+	n.Neighbors = append(n.Neighbors, edge)
 }

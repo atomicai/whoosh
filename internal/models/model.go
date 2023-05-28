@@ -17,7 +17,7 @@ type Point struct {
 }
 
 type PathQuery struct {
-	StartPoint []Point `json:"startPoint"`
-	EndPoint   []Point `json:"endPoint"`
-	UserId     string  `json:"userId"`
+	StartPoint Point  `json:"startPoint"`
+	EndPoint   Point  `json:"endPoint"`
+	UserId     string `json:"userId"`
 }
