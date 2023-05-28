@@ -4,14 +4,8 @@ RUN rabbitmq-plugins enable rabbitmq_web_stomp
 
 FROM golang:1.20.4-alpine AS goAPP
 
+RUN mkdir /app
+ADD . /app/
 WORKDIR /app
-
-COPY go.* ./
-
-RUN go mod download
-
-COPY . .
-
-RUN go build -o /app .
-
-ENTRYPOINT [ "/app" ]
+RUN go build -o main .
+CMD ["/app/main"]

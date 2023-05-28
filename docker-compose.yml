@@ -11,8 +11,8 @@ services:
     volumes:
       - rethinkdb_data:/apps/rethinkdb/data
 
-  rabbitmq_whoosh:
-    container_name: rabbitmq_whoosh
+  rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq_whoosh
     hostname: rabbitmq
     volumes:
@@ -37,8 +37,10 @@ services:
       context: ./
       dockerfile: Dockerfile
       target: goAPP
+    environment:
+      RABBITMQ_SERVER: rabbitmq
     depends_on:
-      - rabbitmq_whoosh
+      - rabbitmq
       - rethinkdb
 
 volumes:
