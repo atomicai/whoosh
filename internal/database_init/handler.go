@@ -15,7 +15,7 @@ func (h *DBHanlder) DeleteTables() {
 }
 
 func (h *DBHanlder) CreateTables() {
-	h.dbService.CreateTable("graph", "graph.csv", ParseGraph)
+	h.dbService.CreateTable("graph", "new_graph.csv", ParseGraph)
 	//h.dbService.CreateTable("clashes", "clashes (1).csv", ParseClashes)
 	//h.dbService.CreateTable("road_index", "road_index (1).csv", ParseRoads)
 	//h.dbService.CreateTable("routers_hex20m", "routes_hex20m.csv", ParseRoutes)

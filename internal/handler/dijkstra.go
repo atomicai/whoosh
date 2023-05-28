@@ -90,7 +90,7 @@ func (g *Graph) AddNode(node models.NodeWithValue) {
 func (g *Graph) GetNodeId(point models.Point) int {
 	for _, node := range g.Nodes {
 		nodePoint := models.Point{Lat: node.Lat, Lon: node.Lon}
-		if dist(nodePoint, point) < 1 {
+		if dist(nodePoint, point) < 0.0001 {
 			return node.Id
 		}
 	}

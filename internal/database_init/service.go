@@ -129,7 +129,7 @@ func ParseGraph(line []string) (interface{}, error) {
 	}
 	graph.Lon = lon
 	for i := 0; i < 6; i++ {
-		idTo, err := strconv.Atoi(line[3+i*2])
+		idTo, err := strconv.ParseFloat(line[3+i*2], 32)
 		if err != nil {
 			return nil, err
 		}
@@ -137,8 +137,8 @@ func ParseGraph(line []string) (interface{}, error) {
 		if err != nil {
 			return nil, err
 		}
-		if idTo != 0 && weight != 0 {
-			graph.Neighbors = append(graph.Neighbors, &models.Edge{To: idTo, Weight: weight})
+		if idTo != -1 && weight != 1 {
+			graph.Neighbors = append(graph.Neighbors, &models.Edge{To: int(idTo), Weight: weight})
 		}
 	}
 	return graph, nil

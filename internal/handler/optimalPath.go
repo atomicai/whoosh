@@ -70,9 +70,9 @@ func OptimalPath() {
 			}
 
 			result1 := Dijkstra(&bodyToJson)
-			result2 := AStar(&bodyToJson)
+			//result2 := AStar(&bodyToJson)
 			fmt.Printf("result1: %+v\n", result1)
-			fmt.Printf("result2: %+v\n", result2)
+			//fmt.Printf("result2: %+v\n", result2)
 
 			err = ch.PublishWithContext(ctx,
 				"",        // exchange
