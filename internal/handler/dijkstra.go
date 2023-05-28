@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/atomicai/whoosh/internal/models"
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"log"
@@ -72,14 +71,23 @@ func InitDijkstra(pathQuery *models.PathQuery) *models.PathResponse {
 	start := graph.GetNode(startId)
 	finish := graph.GetNode(finishId)
 
+	path := make([]models.Point, 0, 10)
 	now := finish
 	for now != start {
-		fmt.Println(now.Id)
+		point := models.Point{Lat: now.Lat, Lon: now.Lon}
+		path = append(path, point)
 		now = now.Parent
 	}
-	fmt.Println(now.Id)
+	point := models.Point{Lat: now.Lat, Lon: now.Lon}
+	path = append(path, point)
 
-	return finish.Value
+	result := models.PathResponse{Path: make([]models.Point, 0, len(path)), UserId: pathQuery.UserId}
+
+	for i := len(path) - 1; i >= 0; i-- {
+		result.Path = append(result.Path, path[i])
+	}
+
+	return &result
 }
 
 func (g *Graph) InitGraph(session *r.Session) error {
