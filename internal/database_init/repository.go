@@ -35,7 +35,7 @@ func NewDBRepository(dbname string) *DBRepository {
 }
 
 func (d *DBRepository) DeleteTables() {
-	result, err := r.DB("whoosh").TableList().Run(d.session)
+	result, err := r.DB(d.dbName).TableList().Run(d.session)
 	if err != nil {
 		log.Fatal(err)
 	}

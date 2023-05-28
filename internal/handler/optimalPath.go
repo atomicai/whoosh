@@ -68,13 +68,18 @@ func OptimalPath() {
 				log.Fatal(err)
 			}
 
-			Dijkstra(&bodyToJson)
-			AStar(&bodyToJson)
+			//Dijkstra(&bodyToJson)
+			//AStar(&bodyToJson)
 
-			//result1 := Dijkstra(&bodyToJson)
-			//result2 := AStar(&bodyToJson)
-			//fmt.Printf("result1: %+v\n", result1)
-			//fmt.Printf("result2: %+v\n", result2)
+			resD := Dijkstra(&bodyToJson)
+			//resAstar := AStar(&bodyToJson)
+			//fmt.Printf("result1: %+v\n", resD)
+			//fmt.Printf("result2: %+v\n", resAstar)
+
+			resultDijkstra, err := json.Marshal(resD)
+			if err != nil {
+				log.Fatal(err)
+			}
 
 			err = ch.PublishWithContext(ctx,
 				"",        // exchange
@@ -83,7 +88,7 @@ func OptimalPath() {
 				false,     // immediate
 				amqp.Publishing{
 					ContentType: "text/plain",
-					Body:        []byte(d.Body),
+					Body:        resultDijkstra,
 				})
 
 		}

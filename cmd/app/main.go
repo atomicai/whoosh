@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	db := database_init.NewDBHandler("whoosh")
+	db := database_init.NewDBHandler("test")
 	db.DeleteTables()
 
 	start := time.Now()
@@ -16,7 +16,7 @@ func main() {
 	elapsed := time.Since(start)
 	fmt.Printf("CreateTables function take %s time\n", elapsed)
 
-	dbname := "whoosh"
+	dbname := "test"
 	handler.NewDijkstra(dbname)
 	handler.OptimalPath()
 
