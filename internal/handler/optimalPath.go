@@ -17,7 +17,7 @@ func failOnError(err error, msg string) {
 }
 
 func OptimalPath() {
-	conn, err := amqp.Dial("amqp://rabbitmq:rabbitmq@localhost:5672/")
+	conn, err := amqp.Dial("amqp://admin:admin@localhost:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -61,11 +61,20 @@ func OptimalPath() {
 
 	go func() {
 		for d := range msgs {
-			log.Printf("Received a message: %s", d.Body)
-
 			bodyToJson := models.PathQuery{}
 
-			json.Unmarshal(d.Body, &bodyToJson)
+			err := json.Unmarshal(d.Body, &bodyToJson)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			Dijkstra(&bodyToJson)
+			AStar(&bodyToJson)
+
+			//result1 := Dijkstra(&bodyToJson)
+			//result2 := AStar(&bodyToJson)
+			//fmt.Printf("result1: %+v\n", result1)
+			//fmt.Printf("result2: %+v\n", result2)
 
 			err = ch.PublishWithContext(ctx,
 				"",        // exchange
@@ -79,7 +88,6 @@ func OptimalPath() {
 
 		}
 	}()
-
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
 	<-forever
 }
