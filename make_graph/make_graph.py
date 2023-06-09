@@ -1,5 +1,4 @@
 import geopandas
-import folium
 import pandas
 from shapely.geometry import Polygon
 import numpy
@@ -90,28 +89,40 @@ def getObject(index, array, xs):
     ]
 
   # 1
-  id1 = index - 100;
-  w1 = max(xs[index], xs[id1]);
+  id1 = index - 100
+  w1 = max(xs[index], xs[id1])
 
   # 2
-  id2 = index - 100 + 1;
-  w2 = max(xs[index], xs[id2]);
+  if index % 2 == 0:
+    id2 = index - 100 + 1
+  else:
+    id2 = index + 1
+  w2 = max(xs[index], xs[id2])
 
   # 3
-  id3 = index + 1;
-  w3 = max(xs[index], xs[id3]);
+  if index % 2 == 0:
+    id3 = index + 1
+  else:
+    id3 = index + 100 + 1
+  w3 = max(xs[index], xs[id3])
 
   # 4
-  id4 = index + 100;
-  w4 = max(xs[index], xs[id4]);
+  id4 = index + 100
+  w4 = max(xs[index], xs[id4])
 
   # 5
-  id5 = index - 1;
-  w5 = max(xs[index], xs[id5]);
+  if index % 2 == 0:
+    id5 = index - 1
+  else:
+    id5 = index + 100 - 1
+  w5 = max(xs[index], xs[id5])
 
   # 6
-  id6 = index -100 - 1;
-  w6 = max(xs[index], xs[id6]);
+  if index % 2 == 0:
+    id6 = index -100 - 1
+  else:
+    id6 = index - 1
+  w6 = max(xs[index], xs[id6])
 
   return [
     item.centroid.x,
@@ -131,7 +142,7 @@ with open("parkings.csv", 'r') as file:
     row = row[2:]
     row[0] = float(row[0])
     row[1] = float(row[1])
-    if 37.5258 <= row[0] <= 37.542 and 55.6977 <= row[1] <= 55.712:
+    if x_min <= row[0] <= x_max and y_min <= row[1] <= y_max:
       parkings.append(row)
 
 xs = []
