@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/atomicai/whoosh/internal/database_init"
-	"github.com/atomicai/whoosh/internal/handler"
 	"time"
 )
 
@@ -16,9 +15,9 @@ func main() {
 	elapsed := time.Since(start)
 	fmt.Printf("CreateTables function take %s time\n", elapsed)
 
-	dbname := "test"
-	handler.NewDijkstra(dbname)
-	handler.OptimalPath()
+	//dbname := "test"
+	//handler.NewDijkstra(dbname)
+	//handler.OptimalPath()
 
 	//pathQuery := models.PathQuery{
 	//	StartPoint: models.Point{

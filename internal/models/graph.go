@@ -14,10 +14,14 @@ type InputNode struct {
 }
 
 type Node struct {
-	NodeId    int
-	Lat       float64
-	Lon       float64
-	Neighbors []*Edge
+	NodeId        int
+	Lat           float64
+	Lon           float64
+	Neighbors     []*Edge
+	IsParking     float64
+	NodeRoadIndex float64
+	NodeStar      float64
+	NodeSpeed     float64
 }
 
 type NodeWithValue struct {
