@@ -6,15 +6,9 @@ import (
 	r "gopkg.in/rethinkdb/rethinkdb-go.v6"
 	"log"
 	"math"
-	"sync"
 )
 
 var dijkstra dijkstraStruct
-
-type dijkstraStruct struct {
-	graph   *Graph
-	session *r.Session
-}
 
 func NewDijkstra(dbname string) {
 	session, err := r.Connect(r.ConnectOpts{
@@ -25,15 +19,8 @@ func NewDijkstra(dbname string) {
 		log.Fatal(err)
 	}
 
-	graph := NewGraph()
-	err = graph.InitGraph(session)
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	dijkstra = dijkstraStruct{
 		session: session,
-		graph:   graph,
 	}
 }
 
@@ -64,54 +51,27 @@ func (g *Graph) InitGraph(session *r.Session) error {
 	return nil
 }
 
-type Graph struct {
-	Nodes []*models.NodeWithValue
-	Mp    map[int]*models.NodeWithValue
-	sync.Mutex
-}
-
-func NewGraph() *Graph {
-	return &Graph{Nodes: make([]*models.NodeWithValue, 0), Mp: make(map[int]*models.NodeWithValue)}
-}
-
-func (g *Graph) GetNode(id int) (node *models.NodeWithValue) {
-	g.Lock()
-	defer g.Unlock()
-	return g.Mp[id]
-}
-
-func (g *Graph) AddNode(node models.NodeWithValue) {
-	g.Lock()
-	defer g.Unlock()
-	g.Nodes = append(g.Nodes, &node)
-	g.Mp[node.Id] = &node
-}
-
-func (g *Graph) GetNodeId(point models.Point) int {
-	for _, node := range g.Nodes {
-		nodePoint := models.Point{Lat: node.Lat, Lon: node.Lon}
-		if dist(nodePoint, point) < 0.0001 {
-			return node.Id
-		}
-	}
-	return -1
-}
-
 func dist(a, b models.Point) float64 {
 	return math.Sqrt((a.Lat-b.Lat)*(a.Lat-b.Lat) + (a.Lon-b.Lon)*(a.Lon-b.Lon))
 }
 
 func Dijkstra(pathQuery *models.PathQuery) *models.PathResponse {
-	startId := dijkstra.graph.GetNodeId(pathQuery.StartPoint)
-	finishId := dijkstra.graph.GetNodeId(pathQuery.EndPoint)
+	graph := NewGraph()
+	err := graph.InitGraph(dijkstra.session)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	startId := graph.GetNodeId(pathQuery.StartPoint)
+	finishId := graph.GetNodeId(pathQuery.EndPoint)
 	if startId == -1 || finishId == -1 {
 		fmt.Println("no point with this coordinates")
 		return nil
 	}
 
-	dijkstra.graph.DijkstraHelper(startId)
-	start := dijkstra.graph.GetNode(startId)
-	finish := dijkstra.graph.GetNode(finishId)
+	graph.DijkstraHelper(startId)
+	start := graph.GetNode(startId)
+	finish := graph.GetNode(finishId)
 	fmt.Printf("dist in dijkstra: %f\n", finish.Value)
 
 	path := make([]models.Point, 0)
@@ -161,72 +121,4 @@ func (g *Graph) DijkstraHelper(Id int) {
 			}
 		}
 	}
-}
-
-func AStar(pathQuery *models.PathQuery) *models.PathResponse {
-	startId := dijkstra.graph.GetNodeId(pathQuery.StartPoint)
-	finishId := dijkstra.graph.GetNodeId(pathQuery.EndPoint)
-	if startId == -1 && finishId == -1 {
-		log.Fatalln("no point with this coordinates")
-	}
-
-	dijkstra.graph.AStarHelper(startId, finishId)
-	start := dijkstra.graph.GetNode(startId)
-	finish := dijkstra.graph.GetNode(finishId)
-
-	fmt.Printf("dist in astar: %f\n", finish.Value)
-
-	path := make([]models.Point, 0, 10)
-	now := finish
-	for now != start {
-		point := models.Point{Lat: now.Lat, Lon: now.Lon}
-		path = append(path, point)
-		now = now.Parent
-	}
-	point := models.Point{Lat: now.Lat, Lon: now.Lon}
-	path = append(path, point)
-
-	result := models.PathResponse{Path: make([]models.Point, 0, len(path)), UserId: pathQuery.UserId}
-
-	for i := len(path) - 1; i >= 0; i-- {
-		result.Path = append(result.Path, path[i])
-	}
-
-	return &result
-}
-
-func (g *Graph) AStarHelper(startId, finishId int) {
-	visited := make(map[int]bool)
-	HevHeap := &models.HevHeap{}
-	finishNode := g.GetNode(finishId)
-
-	startNode := g.GetNode(startId)
-	startNode.Value = 0
-	startNode.HValue = startNode.Value + hevristic(startNode, finishNode)
-	HevHeap.Push(startNode)
-
-	for HevHeap.Size() > 0 {
-		current := HevHeap.Pop()
-		if current.Id == finishId {
-			break
-		}
-
-		visited[current.Id] = true
-		edges := current.Neighbors
-
-		for _, edge := range edges {
-			to := g.GetNode(edge.To)
-			if current.Value+edge.Weight < to.Value {
-				to.Value = current.Value + edge.Weight
-				to.HValue = to.Value + hevristic(to, finishNode)
-				to.Parent = current
-				HevHeap.Push(to)
-			}
-		}
-	}
-}
-
-func hevristic(start, end *models.NodeWithValue) float64 {
-	return (math.Abs(start.Lat-end.Lat) + math.Abs(start.Lon-end.Lon)) * 1000 // check param 1000!!!
-	//return math.Sqrt((start.Lat-end.Lat)*(start.Lat-end.Lat) + (start.Lon-end.Lon)*(start.Lon-end.Lon))
 }
