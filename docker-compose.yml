@@ -14,6 +14,7 @@ services:
       - rethinkdb
       - rabbitmq_whoosh
   #      - whooshui_external
+    restart: on-failure
 
   rethinkdb:
     container_name: rethinkdb
