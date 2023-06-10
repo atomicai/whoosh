@@ -22,7 +22,7 @@ type DBRepository struct {
 
 func NewDBRepository(dbname string) *DBRepository {
 	session, err := r.Connect(r.ConnectOpts{
-		Address:  "localhost:28015",
+		Address:  "rethinkdb",
 		Database: dbname,
 	})
 

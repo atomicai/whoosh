@@ -18,7 +18,7 @@ type dijkstraStruct struct {
 
 func NewDijkstra(dbname string) {
 	session, err := r.Connect(r.ConnectOpts{
-		Address:  "localhost:28015",
+		Address:  "rethinkdb",
 		Database: dbname,
 	})
 	if err != nil {

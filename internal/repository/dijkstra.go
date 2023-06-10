@@ -16,7 +16,7 @@ type DijkstraRepository struct {
 
 func NewDijkstraRepository(dbname string) *DijkstraRepository {
 	session, err := r.Connect(r.ConnectOpts{
-		Address:  "localhost:28015",
+		Address:  "rethinkdb",
 		Database: dbname,
 	})
 
