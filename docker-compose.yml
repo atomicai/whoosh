@@ -2,6 +2,29 @@ version: '3.8'
 
 services:
 
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: golang
+    ports:
+      - 3000:3000
+    depends_on:
+      - rethinkdb
+      - rabbitmq_whoosh
+  #      - whooshui_external
+    restart: on-failure
+
+  rethinkdb:
+    container_name: rethinkdb
+    image: rethinkdb:2.4
+    ports:
+      - "8080:8080"
+      - "28015:28015"
+    volumes:
+      - rethinkdb_data:/apps/rethinkdb/data
+
   rabbitmq_whoosh:
     container_name: rabbitmq_whoosh
     image: rabbitmq_whoosh
@@ -16,37 +39,6 @@ services:
       - 5672:5672
       - 15672:15672
       - 15674:15674
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-      interval: 15s
-      timeout: 10s
-      start_period: 1s
-      retries: 5
-
-  api:
-    container_name: api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: golang
-    ports:
-      - 3000:3000
-    depends_on:
-      rabbitmq_whoosh:
-            condition: service_healthy
-      rethinkdb:
-            condition: service_started
-  #      - whooshui_external
-
-  rethinkdb:
-    container_name: rethinkdb
-    image: rethinkdb:2.4
-    ports:
-      - "8080:8080"
-      - "28015:28015"
-    volumes:
-      - rethinkdb_data:/apps/rethinkdb/data
-
 
 #  whooshui_external:
 #    extends:
