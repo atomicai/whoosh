@@ -2,33 +2,46 @@ version: '3.8'
 
 services:
 
-  rethinkdb:
-    container_name: rethinkdb
-    image: rethinkdb:2.4
-    ports:
-      - "8080:8080"
-      - "28015:28015"
-    volumes:
-      - rethinkdb_data:/apps/rethinkdb/data
+  #  rethinkdb:
+  #    container_name: rethinkdb
+  #    image: rethinkdb:2.4
+  #    ports:
+  #      - "8080:8080"
+  #      - "28015:28015"
+  #    volumes:
+  #      - rethinkdb_data:/apps/rethinkdb/data
 
   rabbitmq_whoosh:
     container_name: rabbitmq_whoosh
     image: rabbitmq_whoosh
     hostname: rabbitmq
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
     build:
       dockerfile: Dockerfile
       target: rabbitmq
+      context: .
     ports:
       - 5672:5672
       - 15672:15672
       - 15674:15674
 
-#  whoosh:
-#   extends:
-#     file: ../whoosh/docker-compose.yml
-#     service: whoosh_external
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: golang
+    ports:
+      - 3000:3000
+    depends_on:
+      #      - rethinkdb
+      - rabbitmq_whoosh
+  #      - whooshui_external
+
+#  whooshui_external:
+#    extends:
+#      file: ../whooshui/docker-compose.yml
+#      service: whooshui_external
 
 volumes:
   rethinkdb_data: null

@@ -17,7 +17,7 @@ func failOnError(err error, msg string) {
 }
 
 func OptimalPath() {
-	conn, err := amqp.Dial("amqp://admin:admin@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq_whoosh/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -89,5 +89,6 @@ func OptimalPath() {
 		}
 	}()
 	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	log.Printf(" !!!!!!!! ")
 	<-forever
 }
