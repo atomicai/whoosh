@@ -36,12 +36,11 @@ services:
         condition: service_healthy
       rethinkdb:
         condition: service_started
-  #   whooshui_external
 
-  #  whooshui_external:
-  #    extends:
-  #      file: ../whooshui/docker-compose.yml
-  #      service: whooshui_external
+  whooshui_external:
+    extends:
+      file: ../whooshui/docker-compose.yml
+      service: whooshui_external
 
   rethinkdb:
     container_name: rethinkdb
