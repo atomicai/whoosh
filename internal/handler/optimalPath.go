@@ -26,20 +26,20 @@ func OptimalPath() {
 	defer ch.Close()
 
 	qReq, err := ch.QueueDeclare(
-		"DijkstraPathQuery", // name
-		true,                // durable
-		false,               // delete when unused
-		false,               // exclusive
-		false,               // no-wait
-		nil,                 // arguments
+		"PathQuery", // name
+		true,        // durable
+		false,       // delete when unused
+		false,       // exclusive
+		false,       // no-wait
+		nil,         // arguments
 	)
 	qRes, err := ch.QueueDeclare(
-		"DijkstraPathResponse", // name
-		true,                   // durable
-		false,                  // delete when unused
-		false,                  // exclusive
-		false,                  // no-wait
-		nil,                    // arguments
+		"PathResponse", // name
+		true,           // durable
+		false,          // delete when unused
+		false,          // exclusive
+		false,          // no-wait
+		nil,            // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 

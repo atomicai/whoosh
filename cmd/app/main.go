@@ -22,12 +22,12 @@ func main() {
 
 	//pathQuery := models.PathQuery{
 	//	StartPoint: models.Point{
-	//		Lat: 55.69811213203434,
-	//		Lon: 37.52609142135623,
+	//		Lat: 55.70094055915914,
+	//		Lon: 37.54008969696205,
 	//	},
 	//	EndPoint: models.Point{
-	//		Lat: 55.69804142135623,
-	//		Lon: 37.52626213203435,
+	//		Lat: 55.70101126983727,
+	//		Lon: 37.52762781745931,
 	//	},
 	//	UserId: "1",
 	//}
