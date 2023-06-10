@@ -46,3 +46,6 @@ services:
       - "28015:28015"
     volumes:
       - rethinkdb_data:/apps/rethinkdb/data
+volumes:
+  rethinkdb_data: null
+  rabbitmq_data: null
