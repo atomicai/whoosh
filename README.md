@@ -12,4 +12,4 @@ docker-compose build
 docker-compose up -d
 ```
 
-> Go to http://localhost:8888/path
+> Go to http://localhost:8888/
